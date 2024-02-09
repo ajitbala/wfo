@@ -8,7 +8,7 @@ import "./App.css";
 import CalendarApp from "./Calendar";
 import { Jan_leaves, month } from "./constants";
 import { useEffect, useState } from "react";
-import { getMonthData, saveData } from "./db";
+import { getMonthData, resetData, saveData } from "./db";
 
 function daysInMonth(iMonth, iYear) {
     return 32 - new Date(iYear, iMonth, 32).getDate();
@@ -98,6 +98,16 @@ function App() {
     const attendancePercent = parseInt(
         (parseInt(presentDates.length) / parseInt(wfoMaster - leaves)) * 100
     );
+
+    const resetAllData = () => {
+        let text = "are you sure?";
+        if (window.confirm(text) == true) {
+            resetData();
+            window.location.reload();
+        } else {
+            return;
+        }
+    };
     return (
         <>
             <Navbar expand="lg" bg="dark" data-bs-theme="dark">
@@ -105,7 +115,11 @@ function App() {
                     <Navbar.Brand href="#">Attendance Calc</Navbar.Brand>
                     <Navbar.Toggle />
                     <Navbar.Collapse className="justify-content-end">
-                        <Navbar.Text>Reset Data</Navbar.Text>
+                        <Navbar.Text>
+                            <button className="btn" onClick={resetAllData}>
+                                Reset all data
+                            </button>
+                        </Navbar.Text>
                     </Navbar.Collapse>
                 </Container>
             </Navbar>
@@ -176,7 +190,7 @@ function App() {
                     </Col>
                 </Row>
                 <Row>
-                    <Col className="mb-5">
+                    <Col className="mb-2">
                         <Button
                             variant="primary"
                             className="w-100"
@@ -184,6 +198,14 @@ function App() {
                         >
                             Save
                         </Button>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col className="mb-5">
+                        <small class="text-body-secondary">
+                            ** All data are stored in browsers localstorage, no
+                            Server no Db.
+                        </small>
                     </Col>
                 </Row>
             </Container>

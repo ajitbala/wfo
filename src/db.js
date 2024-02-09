@@ -30,3 +30,7 @@ export const getMonthData = (mnth) => {
         };
     }
 };
+
+export const resetData = () => {
+    db.remove();
+};
