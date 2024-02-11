@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { DayPicker } from "react-day-picker";
-import { All_Leaves, month } from "./constants";
+import { allLeaves, month } from "./constants";
 import { db, getMonthData, saveData } from "./db";
 
-const disabledDates = () => All_Leaves.map((ph) => new Date(ph));
+const disabledDates = () => allLeaves().map((ph) => new Date(ph));
 
 export default function CalendarApp({
     setPresentDates,
@@ -20,7 +20,9 @@ export default function CalendarApp({
     }, [days, setPresentDates]);
 
     useEffect(() => {
-        let data = getMonthData(dateObj.getMonth());
+        let data = getMonthData(
+            `${month[dateObj.getMonth()]}${dateObj.getFullYear()}`
+        );
         if (data) {
             setDays(data.presentDates);
             setLeaves(data.leaves ?? "");

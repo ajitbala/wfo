@@ -18,7 +18,7 @@ export const saveData = (data) => {
 };
 
 export const getMonthData = (mnth) => {
-    const localData = db.get(month[mnth]);
+    const localData = db.get(mnth);
     const monthData = localData ? localData[0] : localData;
     if (monthData) {
         const savedDates = monthData.presentDates.map(

@@ -6,7 +6,7 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import "./App.css";
 import CalendarApp from "./Calendar";
-import { Jan_leaves, month } from "./constants";
+import { Jan_leaves, month, publicHolidaysInd } from "./constants";
 import { useEffect, useState } from "react";
 import { getMonthData, resetData, saveData } from "./db";
 
@@ -30,12 +30,7 @@ function getCurrentWorkingDays(month, year) {
 }
 
 function publicHolidays(month) {
-    switch (month) {
-        case 0:
-            return Jan_leaves.length;
-        default:
-            return 0;
-    }
+    return publicHolidaysInd[month].length;
 }
 
 const returnWFODays = (days) => Math.ceil(days * 0.5);
@@ -53,7 +48,7 @@ function App() {
 
     const createData = () => {
         let data = {};
-        data.month = month[dateObj.getMonth()];
+        data.month = `${month[dateObj.getMonth()]}${dateObj.getFullYear()}`;
         data.leaves = leaves;
         data.presentDates = presentDates;
         saveData(data);
@@ -61,7 +56,9 @@ function App() {
     };
 
     useEffect(() => {
-        let data = getMonthData(dateObj.getMonth());
+        let data = getMonthData(
+            `${month[dateObj.getMonth()]}${dateObj.getFullYear()}`
+        );
         if (data) {
             setLeaves(data.leaves);
         }
