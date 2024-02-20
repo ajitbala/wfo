@@ -6,9 +6,16 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import "./App.css";
 import CalendarApp from "./Calendar";
-import { Jan_leaves, month, publicHolidaysInd } from "./constants";
+import { month, publicHolidaysInd, returnPHCountry } from "./constants";
 import { useEffect, useState } from "react";
-import { getMonthData, resetData, saveData } from "./db";
+import {
+    getCountry,
+    getMonthData,
+    resetData,
+    saveCountry,
+    saveData,
+} from "./db";
+import { Nav } from "react-bootstrap";
 
 function daysInMonth(iMonth, iYear) {
     return 32 - new Date(iYear, iMonth, 32).getDate();
@@ -19,18 +26,19 @@ function isWeekday(year, month, day) {
     return returnday !== 0 && returnday !== 6;
 }
 
-function getCurrentWorkingDays(month, year) {
+function getCurrentWorkingDays(month, year, country) {
     let days = daysInMonth(month, year);
     let weekdays = 0;
     for (var i = 0; i < days; i++) {
         if (isWeekday(year, month, i + 1)) weekdays++;
     }
 
-    return weekdays - publicHolidays(month);
+    return weekdays - publicHolidays(month, country);
 }
 
-function publicHolidays(month) {
-    return publicHolidaysInd[month].length;
+function publicHolidays(month, country) {
+    let ph = returnPHCountry(country);
+    return ph[month].length;
 }
 
 const returnWFODays = (days) => Math.ceil(days * 0.5);
@@ -38,13 +46,39 @@ const returnWFODays = (days) => Math.ceil(days * 0.5);
 function App() {
     const [dateObj, setDateObj] = useState(new Date());
     const [presentDates, setPresentDates] = useState([]);
-    const wfoMaster = getCurrentWorkingDays(
-        dateObj.getMonth(),
-        dateObj.getFullYear()
-    );
+    const [wfoMaster, setWfoMaster] = useState(0);
+    // let wfoMaster = getCurrentWorkingDays(
+    //     dateObj.getMonth(),
+    //     dateObj.getFullYear(),
+    //     "0"
+    // );
     const [wfoDays, setWfoDays] = useState("");
     const [remDays, setRemDays] = useState("");
     const [leaves, setLeaves] = useState("");
+    const [country, setCountry] = useState("0");
+
+    useEffect(() => {
+        let country = getCountry();
+        if (country) {
+            setCountry(country);
+            setWfoMaster(
+                getCurrentWorkingDays(
+                    dateObj.getMonth(),
+                    dateObj.getFullYear(),
+                    country
+                )
+            );
+        } else {
+            setWfoMaster(
+                getCurrentWorkingDays(
+                    dateObj.getMonth(),
+                    dateObj.getFullYear(),
+                    "0"
+                )
+            );
+        }
+        console.log("con");
+    }, [country]);
 
     const createData = () => {
         let data = {};
@@ -77,7 +111,7 @@ function App() {
         } else {
             setWfoDays(returnWFODays(wfoMaster));
         }
-    }, [leaves]);
+    }, [leaves, wfoMaster]);
 
     const resetMothData = (monthDate) => {
         console.log(monthDate);
@@ -85,10 +119,12 @@ function App() {
     };
 
     useEffect(() => {
-        let wfoMaster = getCurrentWorkingDays(
+        let wfoMasterNew = getCurrentWorkingDays(
             dateObj.getMonth(),
-            dateObj.getFullYear()
+            dateObj.getFullYear(),
+            country
         );
+        setWfoMaster(wfoMasterNew);
         setWfoDays(returnWFODays(wfoMaster));
     }, [dateObj]);
 
@@ -97,7 +133,7 @@ function App() {
     );
 
     const resetAllData = () => {
-        let text = "are you sure?";
+        let text = "Are you sure?";
         if (window.confirm(text) == true) {
             resetData();
             window.location.reload();
@@ -105,6 +141,28 @@ function App() {
             return;
         }
     };
+
+    const savePHCountry = (country) => {
+        setCountry(country);
+        saveCountry(country);
+        let countryText = "";
+        switch (country) {
+            case "0":
+                countryText = "IND";
+                break;
+            case "1":
+                countryText = "AUS-VIC";
+                break;
+            case "2":
+                countryText = "AUS-NSW";
+                break;
+            default:
+                countryText = "IND";
+                break;
+        }
+        alert(`Country set as ${countryText}`);
+    };
+
     return (
         <>
             <Navbar expand="lg" bg="dark" data-bs-theme="dark">
@@ -112,11 +170,44 @@ function App() {
                     <Navbar.Brand href="#">Attendance Calc</Navbar.Brand>
                     <Navbar.Toggle />
                     <Navbar.Collapse className="justify-content-end">
-                        <Navbar.Text>
-                            <button className="btn" onClick={resetAllData}>
-                                Reset all data
-                            </button>
-                        </Navbar.Text>
+                        <Form.Group as={Row} className="">
+                            <Col sm="ms-auto">
+                                <button
+                                    style={{ color: "#dee2e6" }}
+                                    className="btn"
+                                    onClick={resetAllData}
+                                >
+                                    Reset all data
+                                </button>
+                            </Col>
+                        </Form.Group>
+                        <Form.Group as={Row} className="">
+                            <Form.Label
+                                column
+                                className="ps-4"
+                                xs="6"
+                                md="auto"
+                            >
+                                <span style={{ color: "#dee2e6" }}>
+                                    Country
+                                </span>
+                            </Form.Label>
+                            <Col xs="auto" md="auto" className="ms-auto">
+                                <Form.Select
+                                    aria-label="country"
+                                    value={country}
+                                    onChange={(e) =>
+                                        savePHCountry(e.target.value)
+                                    }
+                                >
+                                    <option value="0" selected>
+                                        IND
+                                    </option>
+                                    <option value="1">AUS - VIC</option>
+                                    <option value="2">AUS - NSW</option>
+                                </Form.Select>
+                            </Col>
+                        </Form.Group>
                     </Navbar.Collapse>
                 </Container>
             </Navbar>
@@ -182,6 +273,7 @@ function App() {
                                 presentDates={presentDates}
                                 dateObj={dateObj}
                                 setLeaves={setLeaves}
+                                country={country}
                             />
                         </Form.Group>
                     </Col>
@@ -202,6 +294,9 @@ function App() {
                         <small class="text-body-secondary">
                             ** All data are stored in browsers localstorage, no
                             Server no Db.
+                            <br />
+                            ** Public holidays are based on country selection
+                            from menu. default country is <b>India</b>
                         </small>
                     </Col>
                 </Row>

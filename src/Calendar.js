@@ -3,7 +3,7 @@ import { DayPicker } from "react-day-picker";
 import { allLeaves, month } from "./constants";
 import { db, getMonthData, saveData } from "./db";
 
-const disabledDates = () => allLeaves().map((ph) => new Date(ph));
+const disabledDates = (country) => allLeaves(country).map((ph) => new Date(ph));
 
 export default function CalendarApp({
     setPresentDates,
@@ -11,6 +11,7 @@ export default function CalendarApp({
     presentDates,
     dateObj,
     setLeaves,
+    country,
 }) {
     const initialDays = [];
     const [days, setDays] = useState(initialDays);
@@ -28,9 +29,17 @@ export default function CalendarApp({
             setLeaves(data.leaves ?? "");
         } else {
             setDays(initialDays);
+            setLeaves("");
         }
     }, [dateObj]);
 
+    // useEffect(() => {
+    //     switch(country) {
+    //         "0": di
+    //     }
+
+    // }, [country]);
+    // console.log(country);
     return (
         <div className="card flex justify-content-center">
             <DayPicker
@@ -50,7 +59,7 @@ export default function CalendarApp({
                     },
                 }}
                 captionLayout="dropdown-buttons"
-                disabled={[...disabledDates(), { dayOfWeek: [0, 6] }]}
+                disabled={[...disabledDates(country), { dayOfWeek: [0, 6] }]}
                 onMonthChange={(month) => resetMothData(month)}
             />
         </div>

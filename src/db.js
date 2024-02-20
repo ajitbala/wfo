@@ -17,6 +17,15 @@ export const saveData = (data) => {
     }
 };
 
+export const saveCountry = (country) => {
+    db.update(country, "country");
+};
+
+export const getCountry = () => {
+    let country = db.get("country");
+    return country ?? "0";
+};
+
 export const getMonthData = (mnth) => {
     const localData = db.get(mnth);
     const monthData = localData ? localData[0] : localData;
