@@ -7,12 +7,24 @@ export const saveData = (data) => {
     const isExist = db.get(data.month);
     if (isExist?.length > 0) {
         db.update(
-            [{ leaves: data.leaves, presentDates: data.presentDates }],
+            [
+                {
+                    leaves: data.leaves,
+                    presentDates: data.presentDates,
+                    percentReconcile: data.percentReconcile,
+                    percentReconcileToggle: data.percentReconcileToggle,
+                },
+            ],
             data.month
         );
     } else {
         db.create(data.month, [
-            { leaves: data.leaves, presentDates: data.presentDates },
+            {
+                leaves: data.leaves,
+                presentDates: data.presentDates,
+                percentReconcile: data.percentReconcile,
+                percentReconcileToggle: data.percentReconcileToggle,
+            },
         ]);
     }
 };
@@ -36,6 +48,8 @@ export const getMonthData = (mnth) => {
         return {
             leaves: monthData.leaves,
             presentDates: savedDates,
+            percentReconcile: monthData.percentReconcile,
+            percentReconcileToggle: monthData.percentReconcileToggle,
         };
     }
 };
