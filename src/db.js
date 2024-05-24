@@ -1,5 +1,4 @@
 import LocalStorageDB from "local-storage-db";
-import { month } from "./constants";
 
 export const db = new LocalStorageDB("attendanceData");
 

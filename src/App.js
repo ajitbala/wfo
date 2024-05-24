@@ -107,6 +107,7 @@ function App() {
                 )
             );
         }
+        console.log("conole");
     }, [country]);
 
     useEffect(() => {
