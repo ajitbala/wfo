@@ -14,7 +14,7 @@ export const publicHolidaysInd = {
     4: ["05/01/2024"],
     5: [],
     6: [],
-    7: [],
+    7: ["08/15/2024"],
     8: [],
     9: ["10/02/2024", "10/11/2024", "10/31/2024"],
     10: ["11/01/2024"],
@@ -88,3 +88,5 @@ export const month = [
     "Nov",
     "Dec",
 ];
+
+export const tootlTipText = "Reconciled percent will be grayed out";
