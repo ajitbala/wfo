@@ -3,7 +3,8 @@ import { DayPicker } from "react-day-picker";
 import { allLeaves, month } from "./constants";
 import { db, getMonthData, saveData } from "./db";
 
-const disabledDates = (country) => allLeaves(country).map((ph) => new Date(ph));
+const disabledDates = (country, year) =>
+    allLeaves(country, year).map((ph) => new Date(ph));
 
 export default function CalendarApp({
     setPresentDates,
@@ -59,7 +60,10 @@ export default function CalendarApp({
                     },
                 }}
                 captionLayout="dropdown-buttons"
-                disabled={[...disabledDates(country), { dayOfWeek: [0, 6] }]}
+                disabled={[
+                    ...disabledDates(country, dateObj.getFullYear()),
+                    { dayOfWeek: [0, 6] },
+                ]}
                 onMonthChange={(month) => resetMothData(month)}
             />
         </div>

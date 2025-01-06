@@ -6,7 +6,12 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import "./App.css";
 import CalendarApp from "./Calendar";
-import { month, publicHolidaysInd, returnPHCountry } from "./constants";
+import {
+    month,
+    publicHolidaysInd,
+    returnPHCountry,
+    updateVersion,
+} from "./constants";
 import { useEffect, useState } from "react";
 import {
     getCountry,
@@ -16,6 +21,7 @@ import {
     saveData,
 } from "./db";
 import { Nav } from "react-bootstrap";
+import UpdatesModal from "./updatesModal";
 
 function daysInMonth(iMonth, iYear) {
     return 32 - new Date(iYear, iMonth, 32).getDate();
@@ -33,15 +39,29 @@ function getCurrentWorkingDays(month, year, country) {
         if (isWeekday(year, month, i + 1)) weekdays++;
     }
 
-    return weekdays - publicHolidays(month, country);
+    return weekdays - publicHolidays(month, year, country);
 }
 
-function publicHolidays(month, country) {
-    let ph = returnPHCountry(country);
+function publicHolidays(month, year, country) {
+    let ph = returnPHCountry(country, year);
     return ph[month].length;
 }
 
 const returnWFODays = (days) => Math.ceil(days * 0.5);
+
+const isVersionChanged = () => {
+    const currVersion = localStorage.getItem("updateVersion");
+    if (Boolean(currVersion)) {
+        if (updateVersion > currVersion) {
+            return true;
+        } else {
+            return false;
+        }
+    } else {
+        return true;
+    }
+};
+const isModalDisplayed = Boolean(localStorage.getItem("isModalDisplayed"));
 
 function App() {
     const [dateObj, setDateObj] = useState(new Date());
@@ -301,6 +321,7 @@ function App() {
                     </Col>
                 </Row>
             </Container>
+            <UpdatesModal show={isVersionChanged()} />
         </>
     );
 }
