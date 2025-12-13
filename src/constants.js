@@ -5,7 +5,7 @@
 // export const Oct_leaves = ["10/02/2024", "10/11/2024", "10/31/2024"];
 // export const Nov_leaves = ["11/01/2024"];
 // export const Dec_leaves = ["12/25/2024"];
-export const updateVersion = 1.0;
+export const updateVersion = 1.1;
 
 export const publicHolidaysInd = {
     2024: {
@@ -35,6 +35,20 @@ export const publicHolidaysInd = {
         9: ["10/01/2025", "10/02/2025", "10/20/2025", "10/22/2025"],
         10: [],
         11: ["12/25/2025"],
+    },
+    2026: {
+        0: ["01/01/2026", "01/15/2026", "01/26/2026"],
+        1: [],
+        2: ["03/19/2026"],
+        3: ["04/03/2026"],
+        4: ["05/01/2026", "05/28/2026"],
+        5: [],
+        6: [],
+        7: [],
+        8: ["09/14/2026"],
+        9: ["10/02/2026", "10/20/2026"],
+        10: ["11/10/2026"],
+        11: ["12/25/2026"],
     },
 };
 
@@ -67,6 +81,20 @@ export const publicHolidaysNSW = {
         10: [],
         11: ["12/25/2025", "12/26/2025"],
     },
+    2026: {
+        0: ["01/01/2026", "01/26/2026"],
+        1: [],
+        2: [],
+        3: ["04/03/2026", "04/06/2026"],
+        4: [],
+        5: ["06/08/2026"],
+        6: [],
+        7: ["08/03/2026"],
+        8: [],
+        9: ["10/05/2026"],
+        10: [],
+        11: ["12/25/2026", "12/28/2026"],
+    },
 };
 
 export const publicHolidaysVIC = {
@@ -98,6 +126,20 @@ export const publicHolidaysVIC = {
         10: ["11/04/2025"],
         11: ["12/25/2025", "12/26/2025"],
     },
+    2026: {
+        0: ["01/01/2026", "01/26/2026"],
+        1: [],
+        2: ["03/09/2026"],
+        3: ["04/03/2026", "04/06/2026"],
+        4: [],
+        5: ["06/08/2026"],
+        6: [],
+        7: [],
+        8: [],
+        9: [],
+        10: ["11/03/2026"],
+        11: ["12/25/2026", "12/28/2026"],
+    },
 };
 
 export const returnPHCountry = (country, year) => {
@@ -115,7 +157,7 @@ export const returnPHCountry = (country, year) => {
 
 export const allLeaves = (country, year) => {
     let All_Leaves = [];
-    let publicHolidays = returnPHCountry(country, year);
+    let publicHolidays = returnPHCountry(country, year) ?? {};
 
     Object.keys(publicHolidays).forEach(function (key) {
         All_Leaves = [...All_Leaves, ...publicHolidays[key]];

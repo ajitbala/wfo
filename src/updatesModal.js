@@ -27,7 +27,7 @@ export default function UpdatesModal(props) {
             <Modal.Body>
                 <ul>
                     <li>
-                        2025 Holiday list for India, VIC and NSW has been
+                        2026 Holiday list for India, VIC and NSW has been
                         updated.
                     </li>
                 </ul>

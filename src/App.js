@@ -44,7 +44,7 @@ function getCurrentWorkingDays(month, year, country) {
 
 function publicHolidays(month, year, country) {
     let ph = returnPHCountry(country, year);
-    return ph[month].length;
+    return ph ? ph[month].length : [];
 }
 
 const returnWFODays = (days) => Math.ceil(days * 0.5);
@@ -134,7 +134,7 @@ function App() {
     }, [leaves, wfoMaster]);
 
     const resetMothData = (monthDate) => {
-        console.log(monthDate);
+        // console.log(monthDate);
         setDateObj(monthDate);
     };
 
